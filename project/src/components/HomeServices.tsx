@@ -1,13 +1,8 @@
 import {
   Heart,
   Truck,
-  Home,
-  Dumbbell,
   TestTubesIcon,
   HeartHandshake,
-  HandHeart,
-  HeartPulse,
-  ShieldPlus,
 } from "lucide-react";
 import { openWhatsApp } from "../config";
 

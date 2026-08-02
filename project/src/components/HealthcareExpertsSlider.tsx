@@ -94,9 +94,3 @@ export default function HealthcareExpertsSlider() {
     </section>
   );
 }
-import {
-  doctorSpecialties,
-  pharmacists,
-  nutritionists,
-  physiotherapists,
-} from "./ConsultationServices.tsx";
