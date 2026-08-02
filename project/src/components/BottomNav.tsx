@@ -1,4 +1,5 @@
 import { Home, Grid, ShoppingBag, HeadphonesIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { openWhatsApp } from "../config";
 
 interface BottomNavProps {
@@ -8,15 +9,20 @@ interface BottomNavProps {
 
 const tabs = [
   { id: "home", label: "Home", icon: Home },
-  { id: "services", label: "Services", icon: Grid },
+  { id: "services", label: "Blogs", icon: Grid },
   { id: "orders", label: "Orders", icon: ShoppingBag },
   { id: "support", label: "Support", icon: HeadphonesIcon },
 ];
 
 export default function BottomNav({ active, onSelect }: BottomNavProps) {
+  const navigate = useNavigate();
+
   const handleTab = (id: string) => {
     onSelect(id);
-    if (id === "support") {
+
+    if (id === "services") {
+      navigate("/blog");
+    } else if (id === "support") {
       openWhatsApp("Hello Pharmos, I need support.");
     } else if (id === "orders") {
       openWhatsApp("Hello Pharmos, I want to check my order status.");
