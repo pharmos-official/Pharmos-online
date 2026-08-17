@@ -13,7 +13,7 @@ const menuItems = [
   { label: "Home Services", icon: "🏡" },
   { label: "Order Medicines", icon: "💊", action: "Hello Pharmos, I want to order medicines." },
   { label: "Doctor Consultation", icon: "📅", action: "Hello Pharmos, I want to book a doctor consultation." },
-  { label: "Track Order", icon: "📦", action: "Hello Pharmos, I want to track my order." },
+  { label: "Membership", icon: "📦", url: "https://membership.pharmos.in" },
   { label: "Support", icon: "🎧", action: "Hello Pharmos, I need support." },
 ];
 
@@ -66,6 +66,7 @@ export default function SideMenu({ open, onClose }: SideMenuProps) {
             <button
               key={item.label}
               onClick={() => {
+                if (item.url) window.open(item.url, "_blank");
                 if (item.action) openWhatsApp(item.action);
                 onClose();
               }}

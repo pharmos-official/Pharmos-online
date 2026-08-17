@@ -10,7 +10,7 @@ interface BottomNavProps {
 const tabs = [
   { id: "home", label: "Home", icon: Home },
   { id: "services", label: "Blogs", icon: Grid },
-  { id: "orders", label: "Orders", icon: ShoppingBag },
+  { id: "membership", label: "Membership", icon: ShoppingBag },
   { id: "support", label: "Support", icon: HeadphonesIcon },
 ];
 
@@ -24,8 +24,8 @@ export default function BottomNav({ active, onSelect }: BottomNavProps) {
       navigate("/blog");
     } else if (id === "support") {
       openWhatsApp("Hello Pharmos, I need support.");
-    } else if (id === "orders") {
-      openWhatsApp("Hello Pharmos, I want to check my order status.");
+    } else if (id === "membership") {
+      window.open("https://membership.pharmos.in", "_blank");
     }
   };
 

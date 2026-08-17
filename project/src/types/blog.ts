@@ -7,6 +7,7 @@ export interface BlogPost {
   excerpt?: string | null;
   content: string;
   status: BlogStatus;
+  templateId?: string | null;
   featured_image_url?: string | null;
   seo_title?: string | null;
   seo_description?: string | null;

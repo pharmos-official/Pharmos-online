@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import BlogPostView from "../components/blog/BlogPostView";
 import {
   fetchBlogCategories,
   fetchBlogBySlug,
@@ -142,7 +143,10 @@ export default function BlogDetails() {
 
   const currentPost = post;
   const currentCategory = currentPost?.category_id ? categoriesById[currentPost.category_id] : null;
-  const currentTags = currentPost?.id ? tagsByPost[currentPost.id] ?? [] : [];
+  const currentTags = useMemo(
+    () => (currentPost?.id ? tagsByPost[currentPost.id] ?? [] : []),
+    [currentPost?.id, tagsByPost],
+  );
 
   const sortedPosts = useMemo(() => {
     return [...posts].sort((left, right) => {
@@ -178,19 +182,6 @@ export default function BlogDetails() {
 
     return [...sameCategory, ...byTag].slice(0, 3);
   }, [currentPost, currentTags, sortedPosts, tagsByPost]);
-
-  const faqItems = useMemo(() => {
-    if (!currentPost?.faq_schema) {
-      return [] as Array<{ question: string; answer: string }>;
-    }
-
-    try {
-      const parsed = JSON.parse(currentPost.faq_schema) as Array<{ question: string; answer: string }>;
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  }, [currentPost]);
 
   useEffect(() => {
     if (!currentPost) {
@@ -255,118 +246,38 @@ export default function BlogDetails() {
   }, [currentCategory?.name, currentPost, currentTags]);
 
   if (loading) {
-    return <div className="p-8 text-sm text-slate-500">Loading article...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-950">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-sky-500 border-t-transparent" />
+          <p className="text-sm text-slate-400">Loading article...</p>
+        </div>
+      </div>
+    );
   }
 
   if (!currentPost) {
-    return <div className="p-8 text-sm text-slate-500">Article not found.</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-950">
+        <p className="text-sm text-slate-400">Article not found.</p>
+      </div>
+    );
   }
 
   const shareUrl = typeof window !== "undefined"
     ? `${window.location.origin}/blog/${currentPost.slug}`
     : `https://example.com/blog/${currentPost.slug}`;
 
-  const shareText = encodeURIComponent(`Read ${currentPost.title} on Pharmos Online`);
-
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-10 md:px-8">
-      <article className="mx-auto max-w-5xl space-y-8">
-        <section className="rounded-3xl bg-white p-6 shadow-sm md:p-10">
-          <div className="mb-6 flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-sky-700">
-            <span>Article</span>
-            {currentCategory ? <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-600">{currentCategory.name}</span> : null}
-            {currentPost.reading_time ? <span className="text-slate-500">• {currentPost.reading_time} min read</span> : null}
-          </div>
-
-          {currentPost.featured_image_url ? (
-            <img src={currentPost.featured_image_url} alt={currentPost.title} className="mb-6 h-[320px] w-full rounded-2xl object-cover" />
-          ) : null}
-
-          <div className="mb-6 flex flex-wrap items-center gap-3 text-sm text-slate-500">
-            <span>Author: Pharmos Online</span>
-            <span>•</span>
-            <span>{currentPost.published_at ? new Date(currentPost.published_at).toLocaleDateString() : "Draft"}</span>
-          </div>
-
-          <h1 className="text-3xl font-bold text-slate-900 md:text-5xl">{currentPost.title}</h1>
-          <p className="mt-4 text-lg text-slate-600">{currentPost.excerpt}</p>
-
-          <div className="mt-6 flex flex-wrap gap-2">
-            {currentTags.map((tag) => (
-              <span key={`${currentPost.id}-${tag.slug}`} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-                #{tag.name}
-              </span>
-            ))}
-          </div>
-
-          <div className="mt-8 prose prose-slate max-w-none" dangerouslySetInnerHTML={{ __html: currentPost.content }} />
-        </section>
-
-        {faqItems.length > 0 ? (
-          <section className="rounded-3xl bg-white p-6 shadow-sm md:p-8">
-            <h2 className="mb-4 text-2xl font-bold text-slate-900">FAQ</h2>
-            <div className="space-y-3">
-              {faqItems.map((item) => (
-                <div key={item.question} className="rounded-2xl border border-slate-200 p-4">
-                  <p className="font-semibold text-slate-900">{item.question}</p>
-                  <p className="mt-2 text-sm text-slate-600">{item.answer}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        ) : null}
-
-        <section className="rounded-3xl bg-white p-6 shadow-sm md:p-8">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-2xl font-bold text-slate-900">Related Posts</h2>
-            <div className="flex flex-wrap gap-2">
-              <a href={`https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noreferrer" className="rounded-xl bg-sky-500 px-3 py-2 text-xs font-semibold text-white">
-                Share on X
-              </a>
-              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noreferrer" className="rounded-xl bg-slate-900 px-3 py-2 text-xs font-semibold text-white">
-                Share on LinkedIn
-              </a>
-              <button
-                type="button"
-                onClick={async () => {
-                  await navigator.clipboard.writeText(shareUrl);
-                }}
-                className="rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700"
-              >
-                Copy link
-              </button>
-            </div>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            {relatedPosts.map((entry) => (
-              <a key={entry.id} href={`/blog/${entry.slug}`} className="rounded-2xl border border-slate-200 p-4 transition hover:-translate-y-0.5 hover:shadow-sm">
-                {entry.featured_image_url ? (
-                  <img src={entry.featured_image_url} alt={entry.title} className="mb-3 h-36 w-full rounded-xl object-cover" />
-                ) : null}
-                <h3 className="font-semibold text-slate-900">{entry.title}</h3>
-                <p className="mt-2 text-xs text-slate-500">{entry.reading_time ?? 0} min read</p>
-              </a>
-            ))}
-          </div>
-        </section>
-
-        <section className="grid gap-4 md:grid-cols-2">
-          {previousPost ? (
-            <a href={`/blog/${previousPost.slug}`} className="rounded-3xl bg-white p-5 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Previous</p>
-              <p className="mt-2 text-lg font-bold text-slate-900">{previousPost.title}</p>
-            </a>
-          ) : null}
-
-          {nextPost ? (
-            <a href={`/blog/${nextPost.slug}`} className="rounded-3xl bg-white p-5 text-right shadow-sm md:text-left">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Next</p>
-              <p className="mt-2 text-lg font-bold text-slate-900">{nextPost.title}</p>
-            </a>
-          ) : null}
-        </section>
-      </article>
-    </main>
+    <BlogPostView
+      post={currentPost}
+      categoryName={currentCategory?.name}
+      tags={currentTags}
+      authorName="Pharmos Online"
+      previousPost={previousPost}
+      nextPost={nextPost}
+      relatedPosts={relatedPosts}
+      shareUrl={shareUrl}
+    />
   );
 }
