@@ -1,3 +1,5 @@
+import { BadgeCheck } from "lucide-react";
+
 const features = [
   {
     icon: (
@@ -12,12 +14,15 @@ const features = [
   },
   {
     icon: (
-      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-7 h-7">
-        <circle cx="16" cy="16" r="12" fill="#F9A825" opacity="0.2" stroke="#F9A825" strokeWidth="1.5" />
-        <circle cx="16" cy="16" r="5" fill="#F9A825" opacity="0.5" />
-        <path d="M16 8v2M16 22v2M8 16H6M26 16h-2" stroke="#F9A825" strokeWidth="1.5" strokeLinecap="round" />
-        <path d="M10.34 10.34l1.42 1.42M20.24 20.24l1.42 1.42M10.34 21.66l1.42-1.42M20.24 11.76l1.42-1.42" stroke="#F9A825" strokeWidth="1.2" strokeLinecap="round" />
-      </svg>
+      <div className="relative w-7 h-7" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-7 h-7">
+          <path d="M11 6h10v4H11z" fill="#F9A825" opacity="0.25" stroke="#F9A825" strokeWidth="1.5" strokeLinejoin="round" />
+          <path d="M9 12.5c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v11c0 1.1-.9 2-2 2H11c-1.1 0-2-.9-2-2v-11Z" fill="#F9A825" opacity="0.16" />
+          <path d="M11 6h10v4H11zM9 12.5c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v11c0 1.1-.9 2-2 2H11c-1.1 0-2-.9-2-2v-11Z" stroke="#F9A825" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M12.5 16h7M12.5 19h5" stroke="#F9A825" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+        <BadgeCheck className="absolute -right-1 -bottom-1 h-3.5 w-3.5 fill-white text-[#0A6E9C]" strokeWidth={2.25} />
+      </div>
     ),
     title: "Genuine",
     subtitle: "Products",
@@ -55,6 +60,7 @@ const features = [
 export default function WhyChoosePharmos() {
   return (
     <section className="px-4 mt-4">
+      <h2 className="mb-3 text-lg font-bold text-gray-900">Why Choose Pharmos?</h2>
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
         <div className="grid grid-cols-4 gap-2">
           {features.map((f) => (
